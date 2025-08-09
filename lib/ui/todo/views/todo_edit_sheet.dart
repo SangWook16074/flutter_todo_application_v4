@@ -23,7 +23,16 @@ class TodoEditSheet extends ConsumerWidget {
             onTap: () {
               showModalBottomSheet(
                 context: context,
-                builder: (context) => TodoTitleUpdateSheet(todo: todo),
+                builder: (context) => SafeArea(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      left: 16.0,
+                      right: 16.0,
+                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                    ),
+                    child: TodoTitleUpdateSheet(todo: todo),
+                  ),
+                ),
               );
             },
             child: Padding(

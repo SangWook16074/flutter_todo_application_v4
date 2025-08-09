@@ -11,13 +11,21 @@ part 'todo_list_view_model.g.dart';
 @riverpod
 class TodoListViewModel extends _$TodoListViewModel {
   @override
-  Future<TodoListViewState> build() async {
+  TodoListViewState build() {
+    _init();
+    return TodoListViewState(todos: [], status: Status.loading);
+  }
+
+  void _init() async {
     try {
       final repository = await ref.read(todoRepositoryProvider.future);
-      return TodoListViewState(todos: await repository.getTodos());
+      state = TodoListViewState(
+        todos: await repository.getTodos(),
+        status: Status.done,
+      );
     } catch (e) {
       log(e.toString()); // TOD
-      return TodoListViewState(todos: []);
+      state = TodoListViewState(todos: [], status: Status.error);
     }
   }
 
@@ -31,14 +39,14 @@ class TodoListViewModel extends _$TodoListViewModel {
 
     final repository = await ref.read(todoRepositoryProvider.future);
     repository.saveTodo(newTodo);
-    final prevState = state.requireValue;
+    final prevState = state;
     final prevTodos = prevState.todos;
     final newState = prevState.copyWith(todos: [...prevTodos, newTodo]);
-    state = AsyncData(newState);
+    state = newState;
   }
 
   void updateTodo(Todo todo) async {
-    final prevState = state.requireValue;
+    final prevState = state;
     final prevTodos = prevState.todos;
     final newTodos = prevTodos.map((it) {
       if (it.id == todo.id) {
@@ -50,17 +58,17 @@ class TodoListViewModel extends _$TodoListViewModel {
     final newState = prevState.copyWith(todos: newTodos);
     final repository = await ref.read(todoRepositoryProvider.future);
     repository.updateTodo(todo);
-    state = AsyncData(newState);
+    state = newState;
   }
 
   void deleteTodo(String id) async {
-    final prevState = state.requireValue;
+    final prevState = state;
     final prevTodos = prevState.todos;
     prevTodos.removeWhere((it) => it.id == id);
     final newTodos = prevTodos;
     final newState = prevState.copyWith(todos: newTodos);
     final repository = await ref.read(todoRepositoryProvider.future);
     repository.deleteTodo(id);
-    state = AsyncData(newState);
+    state = newState;
   }
 }

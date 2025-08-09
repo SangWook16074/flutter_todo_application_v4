@@ -39,8 +39,10 @@ class TodoAddBottomSheet extends ConsumerWidget {
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: OutlinedButton.styleFrom(
                     elevation: 0,
                     foregroundColor: Color(0xff000000),
                   ),
@@ -49,11 +51,11 @@ class TodoAddBottomSheet extends ConsumerWidget {
               ),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () => todoAddViewState.isTitleEmpty
+                  onPressed: todoAddViewState.isTitleEmpty
                       ? null
-                      : {
-                          todoViewModel.saveTodo(todoAddViewState.title),
-                          Navigator.of(context).pop(),
+                      : () {
+                          Navigator.of(context).pop();
+                          todoViewModel.saveTodo(todoAddViewState.title);
                         },
                   style: ElevatedButton.styleFrom(
                     elevation: 0,

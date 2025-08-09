@@ -7,7 +7,7 @@ part of 'todo_update_view_model.dart';
 // **************************************************************************
 
 String _$todoUpdateViewModelHash() =>
-    r'1c4d0e6a6695f2427b744d328531a5d5dab59b04';
+    r'9199d8c2a43726d1c7baa1f1e6c70ba2fe224f68';
 
 /// Copied from Dart SDK
 class _SystemHash {

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_todo_application/core/utils/image_icon_path.dart';
 import 'package:flutter_todo_application/core/widgets/image_icon_widget.dart';
-import 'package:flutter_todo_application/data/models/todo.dart';
 import 'package:flutter_todo_application/ui/todo/viewModels/todo_list_view_model.dart';
+import 'package:flutter_todo_application/ui/todo/viewModels/todo_list_view_state.dart';
 import 'package:flutter_todo_application/ui/todo/views/empty_view.dart';
 import 'package:flutter_todo_application/ui/todo/views/todo_edit_sheet.dart';
 import 'package:flutter_todo_application/ui/todo/widgets/todo_list_tile.dart';
@@ -13,16 +13,20 @@ class TodoListView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final todos = ref.watch(todoListViewModelProvider);
+    final state = ref.watch(todoListViewModelProvider);
     final viewModel = ref.watch(todoListViewModelProvider.notifier);
-    return switch (todos) {
-      AsyncData(:final value) =>
-        value.todos.isEmpty
+    return switch (state.status) {
+      Status.loading => Center(child: CircularProgressIndicator.adaptive()),
+
+      Status.error => Center(child: Text("에러가 발생했습니다!")),
+
+      Status.done =>
+        state.todos.isEmpty
             ? EmptyView()
             : ListView.builder(
-                itemCount: value.todos.length,
+                itemCount: state.todos.length,
                 itemBuilder: (context, index) {
-                  final todo = value.todos[index];
+                  final todo = state.todos[index];
                   return TodoListTile(
                     leading: Checkbox(
                       shape: RoundedRectangleBorder(
@@ -78,8 +82,6 @@ class TodoListView extends ConsumerWidget {
                   );
                 },
               ),
-      AsyncError() => Center(child: Text("에러가 발생했습니다!")),
-      _ => Center(child: CircularProgressIndicator.adaptive()),
     };
   }
 }

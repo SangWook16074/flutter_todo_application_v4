@@ -26,15 +26,6 @@ class TodoUI extends StatelessWidget {
         elevation: 0.0,
         centerTitle: false,
         title: TodoUITitleView(),
-        actions: [
-          GestureDetector(
-            onTap: () {},
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: ImageIconWidget(width: 20, path: ImageIconPath.filter),
-            ),
-          ),
-        ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(1.0),
           child: Divider(height: 1.0),

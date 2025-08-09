@@ -14,65 +14,68 @@ class TodoTitleUpdateSheet extends ConsumerWidget {
     final todoListViewModel = ref.read(todoListViewModelProvider.notifier);
     final state = ref.watch(todoUpdateViewModelProvider(todo));
     final viewModel = ref.read(todoUpdateViewModelProvider(todo).notifier);
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 20, top: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "수정하기",
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w800),
-              ),
-              GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
-                child: Icon(Icons.close, size: 20, color: Color(0xffafafaf)),
-              ),
-            ],
-          ),
-        ),
-        TodoTextField(
-          hintLabel: state.todo.title,
-          onChanged: viewModel.onChanged,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () {
-                    Navigator.of(context).popUntil((route) => route.isFirst);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    foregroundColor: Color(0xff000000),
-                  ),
-                  child: Text("취소"),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20, top: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "수정하기",
+                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w800),
                 ),
-              ),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    final newTodo = state.todo;
-                    todoListViewModel.updateTodo(newTodo);
-                    Navigator.of(context).popUntil((route) => route.isFirst);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    backgroundColor: Color(0xff000000),
-                    foregroundColor: Color(0xffffffff),
-                  ),
-                  child: Text("저장"),
+                GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Icon(Icons.close, size: 20, color: Color(0xffafafaf)),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+          TodoTextField(
+            hintLabel: state.todo.title,
+            onChanged: viewModel.onChanged,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      foregroundColor: Color(0xff000000),
+                    ),
+                    child: Text("취소"),
+                  ),
+                ),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final newTodo = state.todo;
+                      todoListViewModel.updateTodo(newTodo);
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      backgroundColor: Color(0xff000000),
+                      foregroundColor: Color(0xffffffff),
+                    ),
+                    child: Text("저장"),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
