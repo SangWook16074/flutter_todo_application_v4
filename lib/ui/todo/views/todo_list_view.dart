@@ -24,9 +24,9 @@ class TodoListView extends ConsumerWidget {
         state.todos.isEmpty
             ? EmptyView()
             : ListView.builder(
-                itemCount: state.todos.length,
+                itemCount: state.filteredTodos.length,
                 itemBuilder: (context, index) {
-                  final todo = state.todos[index];
+                  final todo = state.filteredTodos[index];
                   return TodoListTile(
                     leading: Checkbox(
                       shape: RoundedRectangleBorder(

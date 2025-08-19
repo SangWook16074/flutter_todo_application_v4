@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_todo_application/core/di/todo_provider.dart';
+import 'package:flutter_todo_application/data/enums/todo_filter.dart';
 import 'package:flutter_todo_application/data/models/todo.dart';
 import 'package:flutter_todo_application/ui/todo/viewModels/todo_list_view_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -70,5 +71,9 @@ class TodoListViewModel extends _$TodoListViewModel {
     final repository = await ref.read(todoRepositoryProvider.future);
     repository.deleteTodo(id);
     state = newState;
+  }
+
+  void changeTodoFilter(TodoFilter filter) {
+    state = state.copyWith(filter: filter);
   }
 }

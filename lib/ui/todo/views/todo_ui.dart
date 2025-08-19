@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_todo_application/core/utils/image_icon_path.dart';
 import 'package:flutter_todo_application/core/widgets/image_icon_widget.dart';
 import 'package:flutter_todo_application/ui/todo/views/todo_add_bottom_sheet.dart';
+import 'package:flutter_todo_application/ui/todo/views/todo_filter_sheet.dart';
 import 'package:flutter_todo_application/ui/todo/views/todo_list_view.dart';
 import 'package:flutter_todo_application/ui/todo/views/todo_ui_title_view.dart';
 
@@ -10,6 +11,20 @@ class TodoUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void showTodoFilterSheet() {
+      showModalBottomSheet(
+        context: context,
+        useSafeArea: true,
+        builder: (context) => SafeArea(
+          bottom: true,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TodoFilterSheet(),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
@@ -26,6 +41,17 @@ class TodoUI extends StatelessWidget {
         elevation: 0.0,
         centerTitle: false,
         title: TodoUITitleView(),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              showTodoFilterSheet();
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: ImageIconWidget(path: ImageIconPath.filter, width: 20),
+            ),
+          ),
+        ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(1.0),
           child: Divider(height: 1.0),
