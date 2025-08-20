@@ -2,12 +2,19 @@ import 'dart:convert';
 
 import 'package:flutter_todo_application/data/datasources/todo_api.dart';
 import 'package:flutter_todo_application/data/models/todo.dart';
+import 'package:rxdart/subjects.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalTodoApi extends TodoApi {
-  LocalTodoApi({required SharedPreferences plugin}) : _plugin = plugin;
+  LocalTodoApi({required SharedPreferences plugin}) : _plugin = plugin {
+    _init();
+  }
 
   final SharedPreferences _plugin;
+
+  late final _todoStreamController = BehaviorSubject<List<Todo>>.seeded(
+    const [],
+  );
 
   static const _key = "todos";
 
@@ -15,24 +22,28 @@ class LocalTodoApi extends TodoApi {
   Future<void> _setValue(String key, String value) =>
       _plugin.setString(key, value);
 
-  @override
-  Future<List<Todo>> getTodos() async {
+  _init() {
     final todosJson = _getValue(_key);
     if (todosJson != null) {
       final todos = List<Map<String, dynamic>>.from(
         jsonDecode(todosJson) as List,
       ).map((json) => Todo.fromJson(Map<String, dynamic>.from(json))).toList();
-      return todos;
+      return _todoStreamController.add(todos);
     } else {
-      return [];
+      return _todoStreamController.add([]);
     }
   }
 
   @override
-  Future<void> saveTodo(Todo todo) async {
-    var todos = await getTodos();
+  Stream<List<Todo>> getTodos() => _todoStreamController.asBroadcastStream();
 
-    await _setValue(
+  @override
+  Future<void> saveTodo(Todo todo) async {
+    var todos = [..._todoStreamController.value, todo];
+
+    _todoStreamController.add(todos);
+
+    return _setValue(
       _key,
       jsonEncode([...todos, todo].map((todo) => todo.toJson()).toList()),
     );
@@ -40,9 +51,10 @@ class LocalTodoApi extends TodoApi {
 
   @override
   Future<void> deleteTodo(String id) async {
-    final todos = await getTodos();
+    final todos = [..._todoStreamController.value];
     todos.removeWhere((todo) => todo.id == id);
-    await _setValue(
+    _todoStreamController.add(todos);
+    return _setValue(
       _key,
       jsonEncode(todos.map((todo) => todo.toJson()).toList()),
     );
@@ -50,14 +62,20 @@ class LocalTodoApi extends TodoApi {
 
   @override
   Future<void> updateTodo(Todo todo) async {
-    final todos = await getTodos();
+    final todos = [..._todoStreamController.value];
     final index = todos.indexWhere((it) => it.id == todo.id);
     if (index != -1) {
       todos[index] = todo;
+      _todoStreamController.add(todos);
       await _setValue(
         _key,
         jsonEncode(todos.map((todo) => todo.toJson()).toList()),
       );
     }
+  }
+
+  @override
+  Future<void> close() {
+    return _todoStreamController.close();
   }
 }

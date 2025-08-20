@@ -1,18 +1,17 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_todo_application/data/models/todo.dart';
-import 'package:flutter_todo_application/ui/todo/viewModels/todo_list_view_model.dart';
+import 'package:flutter_todo_application/ui/todo/blocs/todo_list_bloc.dart';
+import 'package:flutter_todo_application/ui/todo/blocs/todo_list_event.dart';
+import 'package:flutter_todo_application/ui/todo/pages/todo_update_page.dart';
 import 'package:flutter_todo_application/ui/todo/views/todo_title_update_sheet.dart';
 
-class TodoEditSheet extends ConsumerWidget {
+class TodoEditSheet extends StatelessWidget {
   final Todo todo;
   const TodoEditSheet({super.key, required this.todo});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final todoListViewModel = ref.read(todoListViewModelProvider.notifier);
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -30,7 +29,7 @@ class TodoEditSheet extends ConsumerWidget {
                       right: 16.0,
                       bottom: MediaQuery.of(context).viewInsets.bottom,
                     ),
-                    child: TodoTitleUpdateSheet(todo: todo),
+                    child: TodoUpdatePage(todo: todo),
                   ),
                 ),
               );
@@ -55,7 +54,7 @@ class TodoEditSheet extends ConsumerWidget {
           Divider(),
           GestureDetector(
             onTap: () {
-              todoListViewModel.deleteTodo(todo.id);
+              context.read<TodoListBloc>().add(TodoListTodoDeleted(todo: todo));
               Navigator.of(context).pop();
             },
             child: Padding(

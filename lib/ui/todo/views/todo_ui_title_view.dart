@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_todo_application/ui/todo/viewModels/todo_list_view_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_todo_application/ui/todo/blocs/todo_list_bloc.dart';
+import 'package:flutter_todo_application/ui/todo/blocs/todo_list_state.dart';
 
 class TodoUITitleView extends StatelessWidget {
   const TodoUITitleView({super.key});
@@ -18,13 +19,13 @@ class TodoUITitleView extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        Consumer(
-          builder: (context, ref, child) {
-            final count = ref.watch(
-              todoListViewModelProvider.select((it) => it.restTodoCount),
-            );
+        BlocSelector<TodoListBloc, TodoListState, int>(
+          selector: (state) {
+            return state.todos.where((it) => !it.isDone).length;
+          },
+          builder: (context, state) {
             return Text(
-              "$count 남음",
+              "$state 남음",
               style: TextStyle(
                 color: Color(0xffafafaf),
                 fontSize: 12.0,

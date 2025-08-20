@@ -7,7 +7,9 @@ enum TodoFilter {
 
   final String label;
   const TodoFilter(this.label);
+}
 
+extension TodoFilterX on TodoFilter {
   List<Todo> apply(List<Todo> todo) {
     switch (this) {
       case TodoFilter.all:

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_todo_application/core/utils/image_icon_path.dart';
 import 'package:flutter_todo_application/core/widgets/image_icon_widget.dart';
+import 'package:flutter_todo_application/ui/todo/pages/todo_create_page.dart';
 import 'package:flutter_todo_application/ui/todo/views/todo_add_bottom_sheet.dart';
 import 'package:flutter_todo_application/ui/todo/views/todo_filter_sheet.dart';
 import 'package:flutter_todo_application/ui/todo/views/todo_list_view.dart';
@@ -73,7 +74,7 @@ class TodoUI extends StatelessWidget {
                   right: 16.0,
                   bottom: MediaQuery.of(context).viewInsets.bottom,
                 ),
-                child: TodoAddBottomSheet(),
+                child: TodoCreatePage(),
               ),
             ),
           );

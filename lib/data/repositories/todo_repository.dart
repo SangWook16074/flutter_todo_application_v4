@@ -6,11 +6,13 @@ class TodoRepository {
 
   const TodoRepository({required TodoApi todoApi}) : _todoApi = todoApi;
 
-  Future<List<Todo>> getTodos() => _todoApi.getTodos();
+  Stream<List<Todo>> getTodos() => _todoApi.getTodos();
 
   Future<void> saveTodo(Todo todo) => _todoApi.saveTodo(todo);
 
   Future<void> deleteTodo(String id) => _todoApi.deleteTodo(id);
 
   Future<void> updateTodo(Todo todo) => _todoApi.updateTodo(todo);
+
+  void dispose() => _todoApi.close();
 }

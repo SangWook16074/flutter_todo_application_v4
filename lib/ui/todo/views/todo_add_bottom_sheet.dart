@@ -1,17 +1,19 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_todo_application/ui/todo/viewModels/todo_add_view_model.dart';
-import 'package:flutter_todo_application/ui/todo/viewModels/todo_list_view_model.dart';
-import 'package:flutter_todo_application/ui/todo/widgets/todo_text_field.dart';
+import 'dart:developer';
 
-class TodoAddBottomSheet extends ConsumerWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_todo_application/data/models/todo.dart';
+import 'package:flutter_todo_application/ui/todo/blocs/todo_list.dart';
+import 'package:flutter_todo_application/ui/todo/widgets/todo_text_field.dart';
+import 'package:uuid/uuid.dart';
+
+import '../blocs/todo_create.dart';
+
+class TodoAddBottomSheet extends StatelessWidget {
   const TodoAddBottomSheet({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final todoViewModel = ref.read(todoListViewModelProvider.notifier);
-    final todoAddViewModel = ref.read(todoAddViewModelProvider.notifier);
-    final todoAddViewState = ref.watch(todoAddViewModelProvider);
+  Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -31,7 +33,15 @@ class TodoAddBottomSheet extends ConsumerWidget {
             ],
           ),
         ),
-        TodoTextField(onChanged: todoAddViewModel.onChange),
+        BlocBuilder<TodoCreateBloc, TodoCreateState>(
+          builder: (context, state) {
+            return TodoTextField(
+              onChanged: (title) => context.read<TodoCreateBloc>().add(
+                TodoCreateTodoTitleChanged(title: title),
+              ),
+            );
+          },
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10.0),
           child: Row(
@@ -50,19 +60,38 @@ class TodoAddBottomSheet extends ConsumerWidget {
                 ),
               ),
               Expanded(
-                child: ElevatedButton(
-                  onPressed: todoAddViewState.isTitleEmpty
-                      ? null
-                      : () {
-                          Navigator.of(context).pop();
-                          todoViewModel.saveTodo(todoAddViewState.title);
-                        },
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    backgroundColor: Color(0xff000000),
-                    foregroundColor: Color(0xffffffff),
-                  ),
-                  child: Text("추가"),
+                child: BlocSelector<TodoCreateBloc, TodoCreateState, bool>(
+                  selector: (state) {
+                    return state.title.isEmpty;
+                  },
+                  builder: (context, isTitleEmpty) {
+                    return ElevatedButton(
+                      onPressed: isTitleEmpty
+                          ? null
+                          : () {
+                              final todoCreateState = context
+                                  .read<TodoCreateBloc>()
+                                  .state;
+                              final newTodo = Todo(
+                                id: Uuid().v4(),
+                                title: todoCreateState.title,
+                                createAt: DateTime.now(),
+                                isDone: false,
+                              );
+
+                              context.read<TodoListBloc>().add(
+                                TodoListTodoCreated(todo: newTodo),
+                              );
+                              Navigator.of(context).pop();
+                            },
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        backgroundColor: Color(0xff000000),
+                        foregroundColor: Color(0xffffffff),
+                      ),
+                      child: Text("추가"),
+                    );
+                  },
                 ),
               ),
             ],
