@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 class TodoListTile extends StatelessWidget {
-  final Widget title;
-  final Widget subTitle;
-  final Widget leading;
-  final Widget trailing;
+  final Widget? title;
+  final Widget? subTitle;
+  final Widget? leading;
+  final Widget? trailing;
   const TodoListTile({
     super.key,
-    required this.title,
-    required this.subTitle,
-    required this.leading,
-    required this.trailing,
+    this.title,
+    this.subTitle,
+    this.leading,
+    this.trailing,
   });
 
   @override
@@ -21,14 +21,17 @@ class TodoListTile extends StatelessWidget {
         children: [
           Row(
             children: [
-              leading,
+              if (leading != null) leading!,
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [title, subTitle],
+                children: [
+                  if (title != null) title!,
+                  if (subTitle != null) subTitle!,
+                ],
               ),
             ],
           ),
-          trailing,
+          if (trailing != null) trailing!,
         ],
       ),
     );

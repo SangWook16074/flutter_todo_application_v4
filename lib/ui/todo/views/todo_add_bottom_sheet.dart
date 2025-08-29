@@ -73,10 +73,8 @@ class TodoAddBottomSheet extends StatelessWidget {
                                   .read<TodoCreateBloc>()
                                   .state;
                               final newTodo = Todo(
-                                id: Uuid().v4(),
+                                id: null,
                                 title: todoCreateState.title,
-                                createAt: DateTime.now(),
-                                isDone: false,
                               );
 
                               context.read<TodoListBloc>().add(
