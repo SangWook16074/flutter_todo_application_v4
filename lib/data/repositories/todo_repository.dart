@@ -1,18 +1,15 @@
-import 'package:flutter_todo_application/data/datasources/todo_api.dart';
+import 'package:flutter_todo_application/data/datasources/local/todo_api.dart';
+import 'package:flutter_todo_application/data/datasources/remote/remote_todo_api.dart';
 import 'package:flutter_todo_application/data/models/todo.dart';
 
 class TodoRepository {
-  final TodoApi _todoApi;
+  final RemoteTodoApi _todoApi;
 
-  const TodoRepository({required TodoApi todoApi}) : _todoApi = todoApi;
+  const TodoRepository({required RemoteTodoApi todoApi}) : _todoApi = todoApi;
 
-  Stream<List<Todo>> getTodos() => _todoApi.getTodos();
+  Future<List<Todo>> getTodos() => _todoApi.getTodos();
 
-  Future<void> saveTodo(Todo todo) => _todoApi.saveTodo(todo);
+  Future<Todo> createTodo(Todo todo) => _todoApi.createTodo(todo);
 
-  Future<void> deleteTodo(String id) => _todoApi.deleteTodo(id);
-
-  Future<void> updateTodo(Todo todo) => _todoApi.updateTodo(todo);
-
-  void dispose() => _todoApi.close();
+  Future<void> deleteTodo(int id) => _todoApi.deleteTodo(id);
 }

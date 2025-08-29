@@ -20,51 +20,19 @@ class TodoListView extends StatelessWidget {
             state.todos.isEmpty
                 ? EmptyView()
                 : ListView.builder(
-                    itemCount: state.filteredTodos.length,
+                    itemCount: state.todos.length,
                     itemBuilder: (context, index) {
-                      final todo = state.filteredTodos[index];
+                      final todo = state.todos[index];
                       return TodoListTile(
-                        leading: Checkbox(
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 0.3,
-                              color: Color(0xfff0f0f0),
-                            ),
-                            borderRadius: BorderRadiusGeometry.circular(4.0),
-                          ),
-
-                          checkColor: Color(0xffffffff),
-                          activeColor: Color(0xff000000),
-                          value: todo.isDone,
-                          onChanged: (value) {
-                            final newTodo = todo.copyWith(isDone: value);
-                            context.read<TodoListBloc>().add(
-                              TodoListTodoCompletionToggled(
-                                todo: newTodo,
-                                isDone: value!,
-                              ),
-                            );
-                          },
-                        ),
                         title: Text(
                           todo.title,
                           style: TextStyle(
-                            decoration: todo.isDone
-                                ? TextDecoration.lineThrough
-                                : TextDecoration.none,
                             color: Color(0xff000000),
                             fontWeight: FontWeight.w600,
                             fontSize: 15,
                           ),
                         ),
-                        subTitle: Text(
-                          todo.dateLabel,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xffafafaf),
-                          ),
-                        ),
+
                         trailing: GestureDetector(
                           onTap: () {
                             showModalBottomSheet(
